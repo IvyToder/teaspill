@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>TEA SPILL! — 90s Gossip Grammar Arcade</title>
+<style>
+*{box-sizing:border-box}html{color-scheme:light}
+body{margin:0;min-height:100vh;font-family:"Trebuchet MS",Verdana,sans-serif;color:#1a0b3b;background:radial-gradient(circle at 10% 0,#ff2e93aa 0,transparent 40%),radial-gradient(circle at 95% 8%,#19e3ff66 0,transparent 35%),#1a0b3b;padding:14px}
+button,input{font:inherit;color:#1a0b3b}
+.wrap{max-width:760px;margin:auto}
+h1{font-family:Impact,"Arial Black",sans-serif;font-size:clamp(3rem,15vw,5.5rem);line-height:1;margin:.1em 0;color:#ffe600;text-shadow:3px 3px 0 #ff2e93,6px 6px 0 #6a1bff;letter-spacing:2px;transform:rotate(-2deg)}
+h2{font-family:Impact,"Arial Black",sans-serif;font-size:1.7rem;margin:.2em 0;letter-spacing:1px}
+.sub{color:#fff8e7;font-style:italic;font-size:1.1rem}
+.card{background:#fff8e7;border:4px solid #1a0b3b;border-radius:22px;box-shadow:6px 6px 0 #19e3ff;padding:18px;margin:12px 0}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.pill{background:#6a1bff;color:#fff;border-radius:99px;padding:6px 12px;font-weight:700;font-size:.85rem}
+.pill.xp{background:#ffe600;color:#1a0b3b;border:2px solid #1a0b3b}
+.bar{height:12px;background:#e6dcff;border-radius:9px;overflow:hidden;margin:12px 0}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,#19e3ff,#ffe600,#ff2e93);transition:width .4s}
+.paper{background:#fff;border-left:6px solid #ff2e93;padding:12px;border-radius:10px;line-height:1.55;margin-bottom:12px}
+.q{background:#19e3ff;border:3px solid #1a0b3b;border-radius:18px 18px 18px 4px;padding:12px 14px;font-weight:700;font-size:1.1rem;line-height:1.5;margin:10px 0}
+.btn{display:block;width:100%;min-height:50px;margin:8px 0;padding:10px 14px;border:3px solid #1a0b3b;border-radius:14px;background:#fff;font-weight:700;text-align:left;cursor:pointer}
+.btn.go{background:#ff2e93;color:#fff;text-align:center;box-shadow:0 4px 0 #1a0b3b;font-size:1.05rem}
+.btn.go:active{transform:translateY(3px)}
+.btn.sel{background:#ffe600}.btn.ok{background:#b6f5c8}.btn.no{background:#ffc4d6}
+.btn:disabled{opacity:1;color:#1a0b3b}.btn.go:disabled{color:#fff;opacity:.5}
+input{width:100%;min-height:50px;padding:10px;border:3px solid #1a0b3b;border-radius:14px;background:#fff;font-size:1rem}
+input:disabled{color:#1a0b3b;background:#eee}
+.fb{margin-top:10px;padding:12px;border-radius:12px;font-weight:600;line-height:1.45}
+.fb.ok{background:#b6f5c8}.fb.bad{background:#ffe0ea}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0}
+.chips .btn,.slot{width:auto;margin:0;text-align:center}
+.slot{display:inline-block;min-width:80px;min-height:40px;margin:2px 4px;background:#e9e0ff}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:520px){.cols{grid-template-columns:1fr}}
+details{margin-top:12px}summary{font-weight:700;cursor:pointer;min-height:44px}
+li{margin:8px 0;line-height:1.45}
+</style></head><body><div class="wrap" id="app"></div>
+<script>
+const S=[
+{n:"Stage 1 · The Rumor Starts",i:"Gossip travels fast in this group chat. Choose the right pronoun to keep up.",items:[
+{t:"mc",q:"Jake posted another gym selfie. ___ looks very proud of his progress.",o:["Him","They","He","Them"],a:2,h:"Who is doing the action of looking proud?",e:"Use 'He' because Jake does the action. 'Him' is for the person who receives an action."},
+{t:"mc",q:"Sophie texted me last night. ___ wants to join our group chat.",o:["Her","She","Me","Them"],a:1,h:"Sophie is the one who wants something.",e:"Use 'She' because Sophie does the action (wants)."},
+{t:"mc",q:"Dan: Did you see Kara and Luis at the gym?\nYou: Yes! I saw ___ near the juice bar.",o:["them","they","we","she"],a:0,h:"Kara and Luis receive the action 'saw'.",e:"Use 'them' because Kara and Luis receive the action. 'They' would do the action."},
+{t:"mc",q:"Mia and I love our new trainer, Marco. ___ always motivates us.",o:["Him","We","They","He"],a:3,h:"Who motivates? Marco does.",e:"Use 'He' because Marco does the motivating. 'Us' receives the action."},
+{t:"mc",q:"Tara and ___ train together every morning.",o:["me","I","her","them"],a:1,h:"Remove 'Tara and'. Would you say 'Me train' or 'I train'?",e:"'Tara and I' is the subject of 'train'. Test it: 'I train' is correct, not 'me train'."},
+{t:"mc",q:"Luis sent the gym photos to Kara and ___ yesterday.",o:["I","me","we","they"],a:1,h:"'To' is a preposition. Remove 'Kara and' to test it.",e:"Use 'me' after the preposition 'to': 'to Kara and me'."},
+{t:"mc",q:"I called you twice, but ___ never answered me.",o:["you","me","him","them"],a:0,h:"'You' has the same form as subject and object. Who didn't answer?",e:"'You' is the subject here: you are the person who never answered. 'Me' is the object."}]},
+{n:"Stage 2 · Gym Drama",i:"Trainers, spotters and after-work plans. Watch who does the action and who receives it.",items:[
+{t:"mc",q:"Mia invited Ryan to train with ___ after work.",o:["she","her","he","they"],a:1,h:"'With' is a preposition.",e:"Use 'her' after the preposition 'with'."},
+{t:"mc",q:"The two trainers said ___ would arrive at six.",o:["they","them","us","him"],a:0,h:"Who would arrive? They do the action.",e:"Use 'they' because the trainers do the action of arriving."},
+{t:"bank",q:"Tap the pronouns to fill the gaps. Tap a filled gap to remove its word.",s:"Ryan asked {0} to spot {1}, and then {2} lifted 80 kilos.",w:["he","him","I","me"],a:["me","him","he"],e:"Ryan asked me (receiver) to spot him (receiver). Then he (Ryan, the doer) lifted the weight."},
+{t:"mc",q:"Between you and ___, the new trainer is not very organized.",o:["I","me","he","we"],a:1,h:"'Between' is a preposition.",e:"After 'between', use an object pronoun: between you and me."},
+{t:"mc",q:"Mia met the trainer and Ryan at the gym. Then she invited ___ to lunch.",o:["they","them","him","us"],a:1,h:"Count how many people receive the invitation.",e:"'Them' replaces 'the trainer and Ryan' (two people) as the object."},
+{t:"bank",q:"Tap the pronouns to fill both gaps.",s:"The coach respects Ryan and Mia because {0} never skip leg day. That is why he trusts {1}.",w:["they","them","he","him"],a:["they","them"],e:"'They' is the subject of 'never skip'. 'Them' receives the action of 'trusts'."},
+{t:"type",q:"Mia is stronger than Ryan, so Ryan always asks ___ for advice.",a:["her"],h:"Who gives the advice? 'For' is a preposition.",e:"Use 'her' because Mia receives the question."},
+{t:"type",q:"Jake and I are late. The trainer is waiting for ___.",a:["us"],h:"Who is the trainer waiting for? Jake and I, as receivers.",e:"Use 'us' for Jake and I as the object after 'for'."}]},
+{n:"Stage 3 · Group Chat Chaos",i:"No typing here. Read each chat, think about who does the action and who receives it, then choose or tap.",items:[
+{t:"bank",q:"Tap the pronouns to fill the gaps.",s:"Luis lost the phone at the gym. Kara found {0}, and then {1} gave it back to {2}.",w:["it","she","him","he"],a:["it","she","him"],e:"Kara found it (the phone). Then she (Kara, the doer) gave it back to him (Luis, the receiver)."},
+{t:"mc",q:"Dana: I saw Leo and Mia at the café. They were arguing, and I didn't hear them.\nIn “I didn't hear them,” who is “them”?",o:["Leo and Mia","Dana and Leo","Dana and Mia","The waiter"],a:0,h:"Who was arguing?",e:"'Them' refers to Leo and Mia. They receive the action 'hear'."},
+{t:"match",q:"Match each pronoun to the person or people it refers to.",p:[["“Mia met Chad and Dana. She hugged them.” → She","Mia"],["“Mia met Chad and Dana. She hugged them.” → them","Chad and Dana"],["“Leo texted Ryan, and Ryan answered him.” → him","Leo"]],e:"Find who does the action first. The pronoun after the verb is usually someone else."},
+{t:"mc",q:"Which message is correct?",o:["Her called he after the gym.","Him called she after the gym.","She called he after the gym.","She called him after the gym."],a:3,h:"The first pronoun does the action. The second one receives it.",e:"'She' does the calling, and 'him' receives the call."},
+{t:"bank",q:"Tap the pronouns to fill both gaps.",s:"Jake: Did you invite Kara and Luis?<br>Mia: Yes! I invited {0}, but {1} can't come tonight.",w:["them","they","us","we"],a:["them","they"],e:"'Them' receives the invitation. 'They' (Kara and Luis) do the action of not coming."},
+{t:"mc",q:"Replace the words: “The new trainer and I met at six.” → ___ met at six.",o:["We","Us","They","Them"],a:0,h:"The speaker is included, and the group does the action.",e:"Use 'We' because the trainer and I do the action of meeting."},
+{t:"mc",q:"Replace the words: “Dana gave the trainer and me a protein bar.” → Dana gave ___ a protein bar.",o:["us","we","them","they"],a:0,h:"The speaker is included, and the group receives the action.",e:"Use 'us' because the trainer and I receive the protein bar."},
+{t:"mc",q:"Which sentence is correct?",o:["Between her and I, the secret is safe.","Between she and me, the secret is safe.","Between her and me, the secret is safe.","Between she and I, the secret is safe."],a:2,h:"'Between' is a preposition.",e:"After a preposition, use object pronouns for both people: between her and me."}]},
+{n:"Stage 4 · Who Told Whom?",i:"Read the story carefully, then show who each pronoun points to.",text:"Mia and Ryan train at Iron Peak Gym. Last Monday, Mia told Ryan a secret about Chad, a famous fitness influencer: Chad had filmed a video in the gym without permission. Ryan promised Mia he would not tell anyone. However, he told the trainer, Dana, and Dana posted about it online. The next day, Chad called Mia and shouted at her. She was confused, so she asked Ryan, “Did you tell Dana?” Ryan said yes and apologized to her. Ryan felt guilty all week. Mia was angry with him, but she forgave him. Dana felt terrible, so she sent Chad a long apology, and Chad accepted it. Later, the manager, Ms. Cole, invited Chad and Mia to dinner. They thanked her for the invitation.",items:[
+{t:"mc",q:"In “Ryan promised Mia he would not tell anyone,” who is “he”?",o:["Mia","Chad","Ryan","Dana"],a:2,h:"Who made the promise?",e:"'He' is Ryan, the person who made the promise."},
+{t:"mc",q:"In “Chad called Mia and shouted at her,” who is “her”?",o:["Dana","Mia","Ms. Cole","Chad"],a:1,h:"Who received the shouting?",e:"'Her' is Mia. She receives the action, and 'at' is a preposition."},
+{t:"type",q:"Ryan was wrong, so he apologized to Mia. He apologized to ___.",a:["her"],h:"Mia receives the apology, and 'to' is a preposition.",e:"Use 'her' because it follows the preposition 'to'."},
+{t:"mc",q:"Ms. Cole invited Chad and Mia to dinner. They thanked ___ for the invitation.",o:["her","she","they","them"],a:0,h:"Who receives the thanks?",e:"Use 'her' for Ms. Cole because she receives the thanks."},
+{t:"mc",q:"Who posted about the secret online?",o:["Ryan","Dana","Chad","Ms. Cole"],a:1,h:"Reread the fourth sentence.",e:"Dana posted about it online after Ryan told her."},
+{t:"mc",q:"In “She was confused, so she asked Ryan,” who is “She”?",o:["Dana","Mia","Ms. Cole","Chad"],a:1,h:"Who did Chad shout at?",e:"'She' is Mia. Chad shouted at her, so she was confused."},
+{t:"mc",q:"In “Dana sent Chad a long apology, and Chad accepted it,” what is “it”?",o:["The apology","The video","The dinner","The secret"],a:0,h:"What did Dana send?",e:"'It' replaces 'a long apology'. It receives the action 'accepted'."},
+{t:"mc",q:"In “Mia was angry with him, but she forgave him,” both “him” mean:",o:["Chad","Ryan","Dana","Ms. Cole"],a:1,h:"Who broke Mia's trust?",e:"Both 'him' mean Ryan, the person who told the secret."},
+{t:"bank",q:"Tap the pronouns to fill both gaps.",s:"Ms. Cole was glad. {0} liked seeing {1} at the same table.",w:["she","her","they","them"],a:["she","them"],e:"'She' = Ms. Cole (doer). 'Them' = Chad and Mia (receivers)."}]},
+{n:"Stage 5 · Celebrity Scandal",i:"No choices this time. Type your answers.",items:[
+{t:"type",q:"Dana and Leo posted the video. ___ wanted more followers.",a:["they"],h:"Two people do the wanting.",e:"Use 'They' because Dana and Leo do the action."},
+{t:"type",q:"Fix this sentence: “The influencer blocked we after the argument.”",a:["The influencer blocked us after the argument"],h:"We receive the blocking.",e:"Use 'us' because we receive the action of blocking."},
+{t:"type",q:"Replace the names with pronouns: “Leo sent the message to Dana and Chad.”",a:["He sent the message to them","He sent it to them"],h:"Leo does the action. Dana and Chad receive the message.",e:"He = Leo (subject). Them = Dana and Chad (object after 'to')."},
+{t:"type",q:"Replace the names with pronouns: “Mia gave Ryan the phone.”",a:["She gave him the phone","She gave the phone to him"],h:"Mia does the action. Ryan receives the phone.",e:"She = Mia (subject). Him = Ryan (object)."},
+{t:"type",q:"Replace the names with pronouns: “Chad blamed Dana and Leo, but Dana and Leo blamed Chad.”",a:["He blamed them, but they blamed him"],h:"Match the doers first, then the receivers.",e:"He blamed them (Dana and Leo), but they blamed him (Chad)."},
+{t:"type",q:"Fix both errors: “Her told we the truth about the influencer.”",a:["She told us the truth about the influencer"],h:"One error is a doer, the other is a receiver.",e:"'She' does the telling. 'Us' receives the action."},
+{t:"type",q:"The trainers admired Mia, so she gave ___ a signed photo.",a:["them"],h:"Who received the photo?",e:"Use 'them' because the trainers receive the photo."},
+{t:"type",q:"Replace the people with pronouns: “Dana showed Chad the message about Ryan and Mia.”",a:["She showed him the message about them"],h:"Three pronouns: a doer, a receiver, and one after 'about'.",e:"She = Dana, him = Chad, them = Ryan and Mia (object after 'about')."}]},
+{n:"Stage 6 · Spill the Final Tea!",i:"Mia is investigating a leak. Use the clues in the story.",text:"Someone is leaking secrets at Iron Peak Gym, and Mia is investigating. First, she asked Ryan about the leaked photos, but he said he did not take them. Then she talked to Dana. Dana showed her a message from an unknown number. The message said, “Chad broke the sponsorship contract. Tell everyone.” Dana did not trust it, so she showed it to Ms. Cole. Ms. Cole checked the number and found something surprising: it belonged to Chad's own assistant, Leo. Leo wanted attention, so he wrote to Dana and to the gym members. Mia confronted Leo in the parking lot. He admitted everything and apologized to her. Mia felt proud because she solved the mystery quickly. Everyone at the gym was shocked by the news. Ms. Cole called Chad, and he thanked Mia and Dana for the help. Now the gym members are talking about them, and everybody wants to hear the full story from her.",items:[
+{t:"mc",q:"In “he said he did not take them,” what does “them” refer to?",o:["The leaked photos","Mia and Dana","Ms. Cole and Leo","The gym members"],a:0,h:"What did Mia ask Ryan about?",e:"'Them' refers to the leaked photos. It receives the action 'take'."},
+{t:"type",q:"Leo wanted attention, so ___ wrote the message.",a:["he"],h:"Leo does the writing.",e:"Use 'he' because Leo does the action."},
+{t:"type",q:"Fix this sentence: “Leo apologized to she.”",a:["Leo apologized to her"],h:"After 'to', use an object pronoun.",e:"Use 'her' because it follows the preposition 'to'."},
+{t:"mc",q:"In “Dana showed her a message,” what is “her”?",o:["A subject pronoun for Dana","An object pronoun for Mia","An object pronoun for Dana","A subject pronoun for Mia"],a:1,h:"Who received the message? Dana showed it to Mia.",e:"'Her' is an object pronoun for Mia. She receives the message."},
+{t:"mc",q:"In “Ms. Cole called Chad, and he thanked Mia and Dana for the help,” who thanked whom?",o:["Chad thanked Mia and Dana","Ms. Cole thanked Chad","Mia and Dana thanked Chad","Dana thanked Ms. Cole"],a:0,h:"Who is 'he'?",e:"'He' is Chad, the doer. Mia and Dana receive the thanks."},
+{t:"mc",q:"In “Now the gym members are talking about them,” who is “them”?",o:["Mia and Dana","Leo and Chad","Ryan and Leo","Ms. Cole and Chad"],a:0,h:"Who did Chad thank in the previous sentence?",e:"'Them' refers to Mia and Dana, the two people Chad just thanked."},
+{t:"type",q:"Everybody wants to hear the full story from Mia. Everybody wants to hear it from ___.",a:["her"],h:"'From' is a preposition.",e:"Use 'her' after the preposition 'from'."},
+{t:"bank",q:"Tap the pronouns to fill all four gaps.",s:"Mia caught Leo. {0} confronted {1}, and then {2} apologized to {3}.",w:["she","he","her","him"],a:["she","him","he","her"],e:"She (Mia) confronted him (Leo), and then he (Leo) apologized to her (Mia)."},
+{t:"write",p:15,q:"Write one sentence about the story with at least one subject pronoun and one object pronoun. Example: She called him.",a:["She asked him a question."],h:"Try a pattern like: She asked him... (doer + receiver).",e:"A subject pronoun does the action and an object pronoun receives it."}]}];
+const R=["Subject pronouns (I, you, he, she, it, we, they) do the action.","Object pronouns (me, you, him, her, it, us, them) receive the action.","Use object pronouns after prepositions: with me, to her, about them.","To replace names, use a subject pronoun for the doer and an object pronoun for the receiver."];
+const shuf=a=>{a=[...a];for(let i=a.length;i>1;){const j=Math.random()*i--|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const N=S.reduce((a,s)=>a+s.items.length,0),MAX=S.reduce((a,s)=>a+s.items.reduce((b,i)=>b+(i.p||10),0),0);
+const $=i=>document.getElementById(i),all=q=>[...document.querySelectorAll(q)];
+let si,ii,xp,tries,miss,done,cur,missed;
+const norm=x=>x.toLowerCase().replace(/[’‘]/g,"'").replace(/[^a-z0-9' ]/g," ").replace(/\s+/g," ").trim();
+const card=h=>$("app").innerHTML=`<div class="card">${h}</div>`;
+function home(){si=ii=xp=0;missed=[];$("app").innerHTML=`<h1>TEA SPILL!</h1><p class="sub">Everybody's talking. Do you know who's talking about whom?</p><div class="card"><h2>90s Gossip Grammar Arcade</h2><p>Six stages. ${N} challenges. Subject pronouns (<b>she</b>) versus object pronouns (<b>her</b>). Earn XP, learn from every answer, and spill the final tea.</p><button class="btn go" id="st">Press start</button></div>`;$("st").onclick=intro}
+function intro(){card(`<span class="pill">Stage ${si+1} of ${S.length}</span><h2>${S[si].n}</h2><p>${S[si].i}</p><button class="btn go" id="gb">Let's go</button>`);$("gb").onclick=()=>{ii=0;item()}}
+function item(){const s=S[si],it=cur=s.items[ii];tries=miss=0;done=false;
+ const dc=S.slice(0,si).reduce((a,x)=>a+x.items.length,0)+ii;
+ card(`<div class="top"><span class="pill">Stage ${si+1} · ${ii+1}/${s.items.length}</span><span class="pill xp">★ ${xp} XP</span></div><div class="bar"><i style="width:${dc/N*100}%"></i></div>${s.text?`<div class="paper">${s.text}</div>`:""}<div class="q">${it.q.replace(/\n/g,"<br>")}</div><div id="ctl"></div><div id="fb"></div><div id="nx"></div>`);B[it.t](it)}
+const fbm=(m,c)=>$("fb").innerHTML=`<div class="fb ${c}">${m}</div>`;
+function verdict(ok){const it=cur,mx=it.p||10;
+ if(ok)return finish(tries?Math.ceil(mx/2):mx,"<b>Correct!</b> "+it.e,true);
+ tries++;
+ if(tries<2)return fbm("<b>Not quite.</b> Hint: "+it.h+" Try again!","bad");
+ const ans=it.t=="mc"?it.o[it.a]:it.a.join(", ");
+ if(it.t=="mc")all("#ctl .btn")[it.sa].classList.add("ok");
+ finish(0,`<b>Answer: ${ans}</b><br>${it.e}`,false)}
+function finish(p,m,ok){done=true;xp+=p;if(p<(cur.p||10))missed.push(cur.e);
+ fbm(m+` <b>(+${p} XP)</b>`,ok?"ok":"bad");all("#ctl button,#ctl input").forEach(b=>b.disabled=true);
+ document.querySelector(".xp").textContent="★ "+xp+" XP";
+ $("nx").innerHTML=`<button class="btn go" id="nb">Next</button>`;$("nb").onclick=next}
+function next(){ii++;if(ii>=S[si].items.length){si++;ii=0;si>=S.length?results():intro()}else item()}
+const B={
+mc(it){const ord=shuf(it.o.map((_,i)=>i));it.sa=ord.indexOf(it.a);
+ $("ctl").innerHTML=ord.map((k,i)=>`<button class="btn" data-i="${i}">${"ABCD"[i]}. ${it.o[k]}</button>`).join("");
+ all("#ctl .btn").forEach(b=>b.onclick=()=>{if(done)return;const i=+b.dataset.i;if(i==it.sa){b.classList.add("ok");verdict(true)}else{b.classList.add("no");b.disabled=true;verdict(false)}})},
+type(it,w){$("ctl").innerHTML=`<input id="in" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Type your answer"><button class="btn go" id="ck">Check</button>`;
+ const chk=()=>{if(done)return;const v=$("in").value;
+  if(w)return verdict(/\b(i|you|he|she|it|we|they)\b/i.test(v)&&/\b(me|him|her|us|them)\b/i.test(v)&&v.trim().split(/\s+/).length>=4);
+  verdict(!!norm(v)&&it.a.some(a=>norm(a)==norm(v)))};
+ $("ck").onclick=chk;$("in").onkeydown=e=>{if(e.key=="Enter")chk()}},
+write(it){B.type(it,1)},
+bank(it){const f=[];$("ctl").innerHTML=`<div class="paper">${it.s.replace(/\{(\d)\}/g,'<button class="btn slot" data-s="$1">___</button>')}</div><div class="chips">${shuf(it.w.map((_,i)=>i)).map(i=>`<button class="btn" data-c="${i}">${it.w[i]}</button>`).join("")}</div><button class="btn go" id="ck">Check</button>`;
+ const sl=all(".slot"),ch=all("[data-c]");
+ const draw=()=>{sl.forEach((b,i)=>b.textContent=f[i]!=null?it.w[f[i]]:"___");ch.forEach(b=>b.disabled=f.includes(+b.dataset.c))};
+ ch.forEach(b=>b.onclick=()=>{if(done)return;const e=sl.findIndex((_,j)=>f[j]==null);if(e>=0){f[e]=+b.dataset.c;draw()}});
+ sl.forEach((b,j)=>b.onclick=()=>{if(!done){f[j]=null;draw()}});
+ $("ck").onclick=()=>{if(done)return;if(sl.some((_,j)=>f[j]==null))return fbm("Fill every gap first.","bad");verdict(sl.every((_,j)=>it.w[f[j]]==it.a[j]))}},
+match(it){let sel=null,left=it.p.length;const rs=shuf(it.p.map((_,i)=>i));
+ $("ctl").innerHTML=`<div class="cols"><div>${it.p.map((p,i)=>`<button class="btn" data-l="${i}">${p[0]}</button>`).join("")}</div><div>${rs.map(i=>`<button class="btn" data-r="${i}">${it.p[i][1]}</button>`).join("")}</div></div>`;
+ const bl=all("[data-l]"),br=all("[data-r]");
+ bl.forEach(b=>b.onclick=()=>{if(b.disabled||done)return;bl.forEach(x=>x.classList.remove("sel"));sel=+b.dataset.l;b.classList.add("sel")});
+ br.forEach(b=>b.onclick=()=>{if(sel==null||b.disabled||done)return;const r=+b.dataset.r;
+  if(r==sel){const l=bl[sel];l.classList.remove("sel");l.classList.add("ok");b.classList.add("ok");l.disabled=b.disabled=true;sel=null;if(--left==0)finish(miss?5:10,"<b>All matched!</b> "+it.e,true);else fbm("Good match!","ok")}
+  else{miss++;b.classList.add("no");setTimeout(()=>b.classList.remove("no"),500);fbm("Not a match. Ask: who does the action, and who receives it?","bad")}})}};
+function results(){const pc=xp/MAX*100,m=pc>=85?"Tea master! Your grammar is gym-strong.":pc>=60?"Great work! A few more reps and you will be unstoppable.":"Good start! Review the rules below and play again.";
+ card(`<h2>Final score: ${xp} / ${MAX} XP</h2><div class="bar"><i style="width:${pc}%"></i></div><p><b>${m}</b></p><button class="btn go" id="pa">Play again</button><details open><summary>Review the grammar</summary><ul>${R.map(r=>`<li>${r}</li>`).join("")}</ul>${missed.length?`<p><b>Explanations for the ones to practice:</b></p><ul>${missed.map(r=>`<li>${r}</li>`).join("")}</ul>`:"<p>No misses. Perfect run!</p>"}</details>`);$("pa").onclick=home}
+home();
+</script></body></html>
